@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  ha-proxy:
+    image: haproxy:local
+    container_name: haproxy
+    restart: always
+    ports:
+      - 3128:3128
+    depends_on:
+      - warp1
+      - warp2
+  warp1:
+    image: warp:test
+    container_name: warp1
+    restart: always
+  warp2:
+    image: warp:test
+    container_name: warp2
+    restart: always
+  warp-tb:
+    image: warp:test
+    container_name: warp-tb
+    restart: always
+    ports:
+      - 3129:3128
