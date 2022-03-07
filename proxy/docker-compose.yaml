@@ -24,3 +24,8 @@ services:
     restart: always
     ports:
       - 3129:3128
+  restarter:
+    image: docker
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    command: ["/bin/sh", "-c", "while true; do echo 'sleeping to restart warp1' ; sleep 43200; docker restart warp1; echo 'sleeping to restart warp2' ;sleep 43200; docker restart warp2; done"]
+    restart: unless-stopped
