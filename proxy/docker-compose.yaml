@@ -27,6 +27,7 @@ services:
   sshtun:
     image: sshtun:test
     container_name: sshtun
+    volumes: ["/home/leo/.ssh/id_rsa:/root/.ssh/id_rsa:ro"]
     restart: always
   restarter:
     image: docker
