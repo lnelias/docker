@@ -29,6 +29,8 @@ services:
     container_name: sshtun
     volumes: ["/home/leo/.ssh/id_rsa:/root/.ssh/id_rsa:ro"]
     restart: always
+    depends_on:
+      - ha-proxy
   restarter:
     image: docker
     volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
