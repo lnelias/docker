@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 # by Leo Elias
-__socks_host=192.168.1.44
+__socks_host=haproxy
 __socks_port=3128
 __ssh_server=96.47.227.5
 __ssh_user=leo
