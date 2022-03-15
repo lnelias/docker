@@ -6,6 +6,7 @@ __ssh_server=96.47.227.5
 __ssh_user=leo
 __local_socks_bind=1080
 __hev_socks_server_port=1081
+__hev_socks_server_local_port=2081
 __timeout=2
 
 FontColor_Red="\033[31m"
@@ -64,7 +65,7 @@ function socatinit () {
         log ERROR "Failed to bind using socat"
     fi
 
-    if screen -dmS socat2 socat -d -d TCP4-LISTEN:3128,reuseaddr,fork TCP4:127.0.0.1:${__hev_socks_server_port}; then
+    if screen -dmS socat2 socat -d -d TCP4-LISTEN:${__hev_socks_server_local_port},reuseaddr,fork TCP4:127.0.0.1:${__hev_socks_server_port}; then
         log INFO "SOCAT set on port ${__hev_socks_server_port}."
     else
         log ERROR "Failed to bind using socat"
