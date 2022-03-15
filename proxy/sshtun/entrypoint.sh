@@ -5,6 +5,7 @@ __socks_port=3128
 __ssh_server=96.47.227.5
 __ssh_user=leo
 __local_socks_bind=1080
+__hev_socks_server_port=1081
 __timeout=2
 
 FontColor_Red="\033[31m"
@@ -58,16 +59,23 @@ log() {
 
 function socatinit () {
     if screen -dmS socat socat -d -d TCP4-LISTEN:3128,reuseaddr,fork TCP4:127.0.0.1:${__local_socks_bind}; then
-        log INFO "SOCAT set on port 3128."
+        log INFO "SOCAT set on port ${__local_socks_bind}."
     else
         log ERROR "Failed to bind using socat"
     fi
+
+    if screen -dmS socat socat -d -d TCP4-LISTEN:3128,reuseaddr,fork TCP4:127.0.0.1:${__hev_socks_server_port}; then
+        log INFO "SOCAT set on port ${__hev_socks_server_port}."
+    else
+        log ERROR "Failed to bind using socat"
+    fi
+
 }
 
 function init(){
 
 
-    if ssh -N -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"; then
+    if ssh -N -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -L ${__hev_socks_server_port}:127.0.0.1:${__hev_socks_server_port} ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"; then
         log INFO "ssh tunnel launched"
         sleep 3
     else

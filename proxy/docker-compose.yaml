@@ -8,6 +8,7 @@ services:
     ports:
       - 3128:3128
       - 4128:4128
+      - 4129:4129
     depends_on:
       - warp1
       - warp2
