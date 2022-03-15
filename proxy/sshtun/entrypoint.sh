@@ -58,13 +58,13 @@ log() {
 
 
 function socatinit () {
-    if screen -dmS socat socat -d -d TCP4-LISTEN:3128,reuseaddr,fork TCP4:127.0.0.1:${__local_socks_bind}; then
+    if screen -dmS socat1 socat -d -d TCP4-LISTEN:3128,reuseaddr,fork TCP4:127.0.0.1:${__local_socks_bind}; then
         log INFO "SOCAT set on port ${__socks_port}."
     else
         log ERROR "Failed to bind using socat"
     fi
 
-    if screen -dmS socat socat -d -d TCP4-LISTEN:3128,reuseaddr,fork TCP4:127.0.0.1:${__hev_socks_server_port}; then
+    if screen -dmS socat2 socat -d -d TCP4-LISTEN:3128,reuseaddr,fork TCP4:127.0.0.1:${__hev_socks_server_port}; then
         log INFO "SOCAT set on port ${__hev_socks_server_port}."
     else
         log ERROR "Failed to bind using socat"
