@@ -58,34 +58,7 @@ log() {
 }
 
 
-# function socatinit () {
-#     if screen -dmS socat1 socat -dd TCP4-LISTEN:3128,reuseaddr,fork TCP4:127.0.0.1:${__local_socks_bind}; then
-#         log INFO "SOCAT set on port ${__socks_port}."
-#     else
-#         log ERROR "Failed to bind using socat"
-#     fi
+log INFO "Launching ssh tunnel"
+ssh -N -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g -L ${__hev_socks_server_local_port}:127.0.0.1:${__hev_socks_server_port} ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"
 
-#     # if screen -dmS socat2 socat -dd TCP4-LISTEN:${__hev_socks_server_local_port},reuseaddr,fork TCP4:127.0.0.1:${__hev_socks_server_port}; then
-#     #     log INFO "SOCAT set on port ${__hev_socks_server_port}."
-#     # else
-#     #     log ERROR "Failed to bind using socat"
-#     # fi
-
-# }
-
-function init(){
-
-
-    if ssh -N -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g -L ${__hev_socks_server_local_port}:127.0.0.1:${__hev_socks_server_port} ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"; then
-        log INFO "ssh tunnel launched"
-        sleep 3
-    else
-        log ERROR "ssh tunnel failed"    
-        exit 1
-    fi
-
-}
-
-#socatinit
-init
 
