@@ -29,10 +29,19 @@ services:
   sshtun:
     image: sshtun:test
     container_name: sshtun
-    volumes: ["/home/leo/.ssh/id_ed25519:/root/.ssh/id_ed25519"]
+    volumes: 
+      - /home/leo/.ssh/id_ed25519:/root/.ssh/id_ed25519
+      - /home/leo/.ssh/known_hosts:/root/.ssh/known_hosts
     restart: always
     depends_on:
       - ha-proxy
+  torproxy:
+    image: dperson/torproxy
+    container_name: torproxy
+    restart: always
+    ports:
+      - 8118:8118
+      - 9050:9050
   restarter:
     image: docker
     volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
