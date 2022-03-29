@@ -46,6 +46,7 @@ services:
     image: mosajjal/pproxy:latest
     container_name: pproxy
     restart: always
+    entrypoint: ["/bin/sleep","50000000000"]
     command: 
       - -l
       - http://:8080
