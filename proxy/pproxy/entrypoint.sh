@@ -50,5 +50,5 @@ log() {
 log INFO "Launching pproxy"
 
 screen -dmS pproxy pproxy -r socks5://haproxy:3128 -vv
-screen -x pproxy
+sleep 5000000000000000000000
 
