@@ -48,5 +48,5 @@ log() {
 
 #https://github.com/qwj/python-proxy
 log INFO "Launching pproxy"
-/usr/bin/bash -c "pproxy -r socks5://haproxy:3128 -vv"
+cd /tmp && /usr/bin/bash -c "pproxy -r socks5://haproxy:3128 -vv"
 
