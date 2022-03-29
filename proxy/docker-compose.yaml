@@ -47,6 +47,8 @@ services:
     container_name: pproxy
     restart: always
     #entrypoint: ["/bin/sleep","50000000000"]
+    tty: true
+    stdin_open: true
     ports:
       - 8080:8080
   restarter:

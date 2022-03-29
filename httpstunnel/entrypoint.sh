@@ -56,7 +56,7 @@ log INFO "Apache Started"
 
 # query certificate
 log INFO "Querying server certificate"
-yes | openssl s_client -showcerts -connect 172.17.0.2:443 2> /dev/null | sed -n "/BEGIN/, /END/p"
+yes | openssl s_client -showcerts -connect 127.0.0.1:443 2> /dev/null | sed -n "/BEGIN/, /END/p"
 
 log INFO "Adding user"
 htpasswd -b -c /var/www/html/.htpasswd leo buceta1
