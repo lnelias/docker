@@ -1,8 +1,10 @@
 #!/usr/bin/bash
 # by Leo Elias
-__socks_host=haproxy
-__socks_port=3128
-__ssh_server=96.47.227.5
+#__socks_host=haproxy
+__socks_host=torproxy
+__socks_port=9050
+#__ssh_server=96.47.227.5
+__ssh_server=186.226.63.15
 __ssh_user=leo
 __local_socks_bind=1080
 __hev_socks_server_port=1081
@@ -59,6 +61,7 @@ log() {
 
 
 log INFO "Launching ssh tunnel"
-ssh -N -p 443 -4 -o ConnectTimeout=${__timeout} -D ${__socks_port} -g -L ${__hev_socks_server_local_port}:127.0.0.1:${__hev_socks_server_port} ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"
+#ssh -N -p 443 -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g -L ${__hev_socks_server_local_port}:127.0.0.1:${__hev_socks_server_port} ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"
+ssh -N -p 443 -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"
 log INFO "Cycling ssh tunnel"
 
