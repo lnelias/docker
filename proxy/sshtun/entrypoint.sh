@@ -66,6 +66,6 @@ log() {
 log INFO "Launching ssh tunnel"
 #ssh -N -p 443 -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g -L ${__hev_socks_server_local_port}:127.0.0.1:${__hev_socks_server_port} ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"
 #ssh -N -p 22 -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"
-ssh -N -p 22 -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g ${__ssh_user}@${__ssh_server} -o "ProxyCommand=proxytunnel -z -p pproxy:8080 -r ${_https_tunnel}:${_https_tunnel_port} -X -R ${proxy_user}:${proxy_pass} -d %h:%p -v"
+ssh -N -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g ${__ssh_user}@${__ssh_server} -o "ProxyCommand=proxytunnel -z -p pproxy:8080 -r ${_https_tunnel}:${_https_tunnel_port} -X -R ${proxy_user}:${proxy_pass} -d %h:%p -v"
 log INFO "Cycling ssh tunnel"
 
