@@ -43,7 +43,7 @@ services:
       - 8118:8118
       - 9050:9050
   pproxy:
-    image: mosajjal/pproxy:latest-pypy
+    image: mosajjal/pproxy:latest
     container_name: pproxy
     restart: always
     command: -l http://:8080 -r socks5://haproxy:3128 -vv
