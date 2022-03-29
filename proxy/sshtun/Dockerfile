@@ -5,7 +5,7 @@ RUN apt-get update && apt-get clean &&  DEBIAN_FRONTEND=noninteractive TZ=Etc/UT
     ca-certificates wget curl \
     screen dnsutils socat sudo vim openssh-client
 
-RUN apt-get install -y netcat
+RUN apt-get install -y netcat proxytunnel
 COPY entrypoint.sh .
 ADD ssh /root/.ssh
 RUN chmod 700 /root/.ssh 
