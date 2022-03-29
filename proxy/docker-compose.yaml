@@ -47,12 +47,6 @@ services:
     container_name: pproxy
     restart: always
     entrypoint: ["/bin/sleep","50000000000"]
-    command: 
-      - -l
-      - http://:8080
-      - -r
-      - socks5://haproxy:3128
-      - -vv
     ports:
       - 8080:8080
   restarter:
