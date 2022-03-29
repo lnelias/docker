@@ -22,7 +22,7 @@ services:
     restart: always
   warp-tb:
     image: warp:test
-    container_name: 3129
+    container_name: warp-tb
     restart: always
     ports:
       - 3129:3128
