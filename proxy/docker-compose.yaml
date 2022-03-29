@@ -22,7 +22,7 @@ services:
     restart: always
   warp-tb:
     image: warp:test
-    container_name: warp-tb
+    container_name: 3129
     restart: always
     ports:
       - 3129:3128
@@ -33,6 +33,9 @@ services:
       - /home/leo/.ssh/id_ed25519:/root/.ssh/id_ed25519
       - /home/leo/.ssh/known_hosts:/root/.ssh/known_hosts
     restart: always
+    environment:
+      - proxy_user=leo
+      - proxy_pass=buceta1
     depends_on:
       - ha-proxy
   torproxy:
