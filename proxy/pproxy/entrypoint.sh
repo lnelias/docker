@@ -48,5 +48,6 @@ log() {
 
 #https://github.com/qwj/python-proxy
 log INFO "Launching pproxy"
+sleep 500000000000
 pproxy -r socks5://haproxy:3128 -vv
 
