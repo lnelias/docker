@@ -48,8 +48,13 @@ log() {
 
 #https://github.com/qwj/python-proxy
 log INFO "Launching pproxy"
-
 #screen -dmS pproxy pproxy -r socks5://haproxy:3128 -vv
 pproxy -r socks5://haproxy:3128 --daemon
-sleep 50000000000000000000000
+while true; do
+    if nc -zw 1 localhost 8080; then
+        sleep 1
+    else
+        exit 1
+    fi
+fi
 
