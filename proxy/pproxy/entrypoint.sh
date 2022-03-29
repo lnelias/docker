@@ -48,5 +48,5 @@ log() {
 
 #https://github.com/qwj/python-proxy
 log INFO "Launching pproxy"
-pproxy -l http://:8080 -r socks5://haproxy:3128 -vv
+pproxy -r socks5://haproxy:3128 -vv
 
