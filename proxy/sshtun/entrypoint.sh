@@ -3,8 +3,8 @@
 #__socks_host=haproxy
 __socks_host=torproxy
 __socks_port=9050
-#__ssh_server=96.47.227.5
-__ssh_server=186.226.63.15
+__ssh_server=96.47.227.5
+#__ssh_server=186.226.63.15
 __ssh_user=leo
 __local_socks_bind=1080
 __hev_socks_server_port=1081
