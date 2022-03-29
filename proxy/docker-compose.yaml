@@ -47,7 +47,6 @@ services:
     container_name: pproxy
     restart: always
     command: 
-      - "-l http://:8080"
       - "-r socks5://haproxy:3128"
       - "-vv"
          
