@@ -16,16 +16,22 @@ services:
     image: warp:test
     container_name: warp1
     restart: always
+    depends_on:
+      - ha-proxy
   warp2:
     image: warp:test
     container_name: warp2
     restart: always
+    depends_on:
+      - ha-proxy
   warp-tb:
     image: warp:test
     container_name: warp-tb
     restart: always
     ports:
       - 3129:3128
+    depends_on:
+      - ha-proxy
   sshtun:
     image: sshtun:test
     container_name: sshtun
@@ -38,6 +44,7 @@ services:
       - proxy_pass=buceta1
     depends_on:
       - ha-proxy
+      - pproxy
   torproxy:
     image: dperson/torproxy
     container_name: torproxy
@@ -54,6 +61,9 @@ services:
     stdin_open: true
     ports:
       - 8080:8080
+    depends_on:
+      - ha-proxy
+
   restarter:
     image: docker
     volumes: ["/var/run/docker.sock:/var/run/docker.sock"]

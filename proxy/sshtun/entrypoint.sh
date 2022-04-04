@@ -1,15 +1,13 @@
 #!/usr/bin/bash
 # by Leo Elias
-#__socks_host=haproxy
-__socks_host=torproxy
-__socks_port=9050
-#__ssh_server=96.47.227.5
-__ssh_server=186.226.63.15
-__ssh_user=leo
-__local_socks_bind=1080
-__hev_socks_server_port=1081
-__hev_socks_server_local_port=2081
-__timeout=2
+_root=/tmp
+_socks5_server_address=torproxy
+_socks5_server_port=9050
+#_ssh_host=186.226.63.15
+_ssh_host=96.47.227.5
+_ssh_user=leo
+_local_socks_bind=1080
+_timeout=2
 _https_tunnel=96.47.227.5
 _https_tunnel_port=443
 
@@ -27,16 +25,6 @@ FontColor_Suffix="\033[0m"
 #
 # Functions
 #
-
-# checkWarp() {
-#     warpOn="`curl -s https://www.cloudflare.com/cdn-cgi/trace/ | grep warp`"
-#     if [ "$warpOn" == "warp=on" ]; then
-#         log INFO "Warp connected!"
-#     else
-#         log ERROR "Warp not working..."
-#         exit 1
-#     fi
-# }
 
 
 log() {
@@ -63,9 +51,94 @@ log() {
 }
 
 
+#
+# Proxytunnel
+#
+__proxytunnel_daemon_pid="init"
+function proxytunnel_daemon_launch() {
+    pkill proxytunnel
+    nohup proxytunnel -p pproxy:8080 -d ${_ssh_host}:${_https_tunnel_port} -a 8080 &
+    __proxytunnel_daemon_pid="`echo $!`"
+    if ps -p ${__proxytunnel_daemon_pid} > /dev/null; then
+        log INFO "Proxytunnel is running"
+    else
+        log ERROR "Proxytunnel FAILED to launch"
+    fi
+}
+
+
+function proxytunnel() {
+    if [ "${__proxytunnel_daemon_pid}" == "init" ]; then
+        proxytunnel_daemon_launch
+    else
+        if ps -p ${__proxytunnel_daemon_pid} > /dev/null; then
+            log INFO "Proxytunnel is running"
+        else
+            log INFO "Proxytunnel is out, relaunching it."
+            proxytunnel_daemon_launch
+        fi
+    fi
+
+}
+
+#
+# Cerfificate 
+#
+function get_cert() {
+
+    log INFO "Querying for remote certificate using ${_socks5_server_address}:${_socks5_server_port} "
+    ssh root@${_https_tunnel} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${_socks5_server_address}:${_socks5_server_port} %h %p" "yes | openssl s_client -showcerts -connect ${_https_tunnel}:${_https_tunnel_port}" | sed -n "/BEGIN/, /END/p" > ${_root}/${_ssh_host}.reference.pubcert
+    if [ ! -s ${_root}/${_ssh_host}.reference.pubcert ]; then
+        log ERROR "Failed to query REFERENCE cert through socks5 proxy"
+    fi
+
+    
+    log INFO "Querying remote pub cert presented through proxytunnel"
+    yes | openssl s_client -showcerts -connect localhost:8080 | sed -n "/BEGIN/, /END/p" > /tmp/.${_ssh_host}.pubcert
+    if [ ! -s /tmp/.${_ssh_host}.pubcert ]; then
+        log ERROR "Failed to query remote cert through proxytunnel"
+    fi
+}
+
+function certCheck() {
+    get_cert 2>/dev/null
+    if [ -f /tmp/.${_ssh_host}.pubcert ]; then
+        __remote_hash="`md5sum /tmp/.${_ssh_host}.pubcert| awk '{print $1}'`"
+        __reference_hash="`md5sum ${_root}/${_ssh_host}.reference.pubcert| awk '{print $1}'`"
+        if [ "${__remote_hash}" == "${__reference_hash}" ]; then
+            log INFO "Local Certificate matches remote."
+            __status='ok'
+        else
+            log ERROR "REMOTE CERT is not matching our reference !!"
+            __status='out'
+
+        fi
+        
+    else
+        log WARN "Could not find dumped certificate to compare to our reference"
+    fi
+}
+
+
+#
+# Main()
+#
+
+
+proxytunnel
+get_cert
+certCheck
+
 log INFO "Launching ssh tunnel"
-#ssh -N -p 443 -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g -L ${__hev_socks_server_local_port}:127.0.0.1:${__hev_socks_server_port} ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"
-#ssh -N -p 22 -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g ${__ssh_user}@${__ssh_server} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${__socks_host}:${__socks_port} %h %p"
-ssh -N -4 -o ConnectTimeout=${__timeout} -D ${__local_socks_bind} -g ${__ssh_user}@${__ssh_server} -o "ProxyCommand=proxytunnel -z -p pproxy:8080 -r ${_https_tunnel}:${_https_tunnel_port} -X -R ${proxy_user}:${proxy_pass} -d %h:%p -v"
+ssh -N -4 -o ConnectTimeout=${_timeout} -D ${_local_socks_bind} -g ${_ssh_user}@${_ssh_host} -o "ProxyCommand=proxytunnel -z -p pproxy:8080 -r ${_https_tunnel}:${_https_tunnel_port} -X -R ${proxy_user}:${proxy_pass} -d %h:%p -v"
 log INFO "Cycling ssh tunnel"
 
+if [ "${__cert_status}" == "ok" ]; then
+    log INFO "---------------------------------------------"
+    log INFO " Launching tunnel"
+    log INFO "---------------------------------------------"
+    ssh -N -4 -o ConnectTimeout=${_timeout} -D ${_local_socks_bind} -g ${_ssh_user}@${_ssh_host} -o "ProxyCommand=proxytunnel -z -p pproxy:8080 -r ${_https_tunnel}:${_https_tunnel_port} -X -R ${proxy_user}:${proxy_pass} -d %h:%p -v"
+    log ERROR "Cycling ssh tunnel"
+else
+    log ERROR "Failed to launch tunnel..."
+fi
