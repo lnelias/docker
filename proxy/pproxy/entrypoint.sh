@@ -1,15 +1,6 @@
 #!/usr/bin/bash
 # by Leo Elias
-#__socks_host=haproxy
-__socks_host=torproxy
-__socks_port=9050
-#__ssh_server=96.47.227.5
-__ssh_server=186.226.63.15
-__ssh_user=leo
-__local_socks_bind=1080
-__hev_socks_server_port=1081
-__hev_socks_server_local_port=2081
-__timeout=2
+
 
 FontColor_Red="\033[31m"
 FontColor_Red_Bold="\033[1;31m"
@@ -48,4 +39,4 @@ log() {
 
 #https://github.com/qwj/python-proxy
 log INFO "Launching pproxy"
-pproxy -r socks5://haproxy:3128 -vv
+pproxy -r socks5://${SOCKS5_SERVER}:${SOCKS5_SERVER_PORT} -vv

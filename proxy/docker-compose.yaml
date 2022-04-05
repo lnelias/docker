@@ -24,14 +24,14 @@ services:
     restart: always
     depends_on:
       - ha-proxy
-  warp-tb:
-    image: warp:test
-    container_name: warp-tb
-    restart: always
-    ports:
-      - 3129:3128
-    depends_on:
-      - ha-proxy
+  # warp-tb:
+  #   image: warp:test
+  #   container_name: warp-tb
+  #   restart: always
+  #   ports:
+  #     - 3129:3128
+  #   depends_on:
+  #     - ha-proxy
   sshtun:
     image: sshtun:test
     container_name: sshtun
@@ -52,17 +52,34 @@ services:
     ports:
       - 8118:8118
       - 9050:9050
-  pproxy:
+  pproxy0:
     image: pproxy:test
-    container_name: pproxy
+    container_name: pproxy0
     restart: always
     #entrypoint: ["/bin/sleep","50000000000"]
     tty: true
     stdin_open: true
     ports:
       - 8080:8080
+    environment:
+      - SOCKS5_SERVER=haproxy
+      - SOCKS5_SERVER_PORT=3128
     depends_on:
       - ha-proxy
+  pproxy1:
+    image: pproxy:test
+    container_name: pproxy1
+    restart: always
+    #entrypoint: ["/bin/sleep","50000000000"]
+    tty: true
+    stdin_open: true
+    ports:
+      - 8081:8080
+    environment:
+      - SOCKS5_SERVER=torproxy
+      - SOCKS5_SERVER_PORT=9050
+    depends_on:
+      - torproxy
 
   restarter:
     image: docker
