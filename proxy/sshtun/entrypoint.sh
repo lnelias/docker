@@ -135,7 +135,16 @@ if [ "${__cert_status}" == "ok" ]; then
     log INFO "---------------------------------------------"
     log INFO " Launching tunnel"
     log INFO "---------------------------------------------"
-    ssh -N -4 -o ConnectTimeout=${_timeout} -D ${_local_socks_bind} -g ${_ssh_user}@${_ssh_host} -o "ProxyCommand=proxytunnel -z -p ${SOCKS5_SERVER}:${SOCKS5_SERVER_PORT} -r ${_https_tunnel}:${_https_tunnel_port} -X -R ${proxy_user}:${proxy_pass} -d %h:%p -v"
+    ssh -N -4 -o ConnectTimeout=${_timeout} \
+        -o ServerAliveInterval=10 \
+        -o ServerAliveCountMax=2 \
+        -D ${_local_socks_bind} \
+        -g ${_ssh_user}@${_ssh_host} \
+        -o "ProxyCommand=proxytunnel \
+        -z -p ${SOCKS5_SERVER}:${SOCKS5_SERVER_PORT} \
+        -r ${_https_tunnel}:${_https_tunnel_port} \
+        -X -R ${proxy_user}:${proxy_pass} \
+        -d %h:%p -v"
     log ERROR "Cycling ssh tunnel"
 else
     log ERROR "Failed to launch tunnel..."
