@@ -57,7 +57,7 @@ log() {
 __proxytunnel_daemon_pid="init"
 function proxytunnel_daemon_launch() {
     pkill proxytunnel
-    nohup proxytunnel -p pproxy:8080 -d ${_ssh_host}:${_https_tunnel_port} -a 8080 &
+    nohup proxytunnel -p ${SOCKS5_SERVER}:${SOCKS5_SERVER_PORT} -d ${_ssh_host}:${_https_tunnel_port} -a 8080 &
     __proxytunnel_daemon_pid="`echo $!`"
     if ps -p ${__proxytunnel_daemon_pid} > /dev/null; then
         log INFO "Proxytunnel is running"
