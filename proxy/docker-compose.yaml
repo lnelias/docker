@@ -29,9 +29,9 @@ services:
   #     - 3129:3128
   #   depends_on:
   #     - ha-proxy
-  sshtun:
+  sshtun1:
     image: sshtun:test
-    container_name: sshtun
+    container_name: sshtun1
     volumes: 
       - /home/leo/.ssh/id_ed25519:/root/.ssh/id_ed25519
       - /home/leo/.ssh/known_hosts:/root/.ssh/known_hosts
@@ -39,9 +39,28 @@ services:
     environment:
       - proxy_user=leo
       - proxy_pass=buceta1
+      - SOCKS5_SERVER=pproxy
+      - SOCKS5_SERVER_PORT=8080
     depends_on:
       - ha-proxy
       - pproxy0
+
+  sshtun2:
+    image: sshtun:test
+    container_name: sshtun2
+    volumes: 
+      - /home/leo/.ssh/id_ed25519:/root/.ssh/id_ed25519
+      - /home/leo/.ssh/known_hosts:/root/.ssh/known_hosts
+    restart: always
+    environment:
+      - proxy_user=leo
+      - proxy_pass=buceta1
+      - SOCKS5_SERVER=pproxy
+      - SOCKS5_SERVER_PORT=8081
+    depends_on:
+      - ha-proxy
+      - pproxy1
+
   torproxy:
     image: dperson/torproxy
     container_name: torproxy
@@ -49,6 +68,7 @@ services:
     ports:
       - 8118:8118
       - 9050:9050
+      
   pproxy0:
     image: pproxy:test
     container_name: pproxy0
@@ -63,6 +83,7 @@ services:
       - SOCKS5_SERVER_PORT=3128
     depends_on:
       - ha-proxy
+
   pproxy1:
     image: pproxy:test
     container_name: pproxy1
