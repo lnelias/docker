@@ -26,8 +26,6 @@ FontColor_Suffix="\033[0m"
 #
 # Functions
 #
-
-
 log() {
     local LEVEL="$1"
     local MSG="$2"
