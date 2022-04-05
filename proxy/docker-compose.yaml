@@ -44,7 +44,7 @@ services:
       - proxy_pass=buceta1
     depends_on:
       - ha-proxy
-      - pproxy
+      - pproxy0
   torproxy:
     image: dperson/torproxy
     container_name: torproxy
