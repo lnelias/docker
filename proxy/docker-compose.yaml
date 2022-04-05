@@ -9,9 +9,6 @@ services:
       - 3128:3128
       - 4128:4128
       - 4129:4129
-    depends_on:
-      - warp1
-      - warp2
   warp1:
     image: warp:test
     container_name: warp1
