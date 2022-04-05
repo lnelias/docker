@@ -7,7 +7,7 @@ _socks5_server_port=${TORPROXY_PORT}
 _ssh_host=96.47.227.5
 _ssh_user=leo
 _local_socks_bind=1080
-_timeout=10
+_timeout=${TUNNEL_TIMEOUT}
 _https_tunnel=96.47.227.5
 _https_tunnel_port=443
 
