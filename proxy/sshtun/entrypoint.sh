@@ -7,7 +7,7 @@ _socks5_server_port=${TORPROXY_PORT}
 _ssh_host=96.47.227.5
 _ssh_user=leo
 _local_socks_bind=1080
-_timeout=2
+_timeout=10
 _https_tunnel=96.47.227.5
 _https_tunnel_port=443
 
@@ -87,7 +87,7 @@ function proxytunnel() {
 function get_cert() {
 
     log INFO "Querying for remote certificate using ${_socks5_server_address}:${_socks5_server_port} "
-    ssh root@${_https_tunnel} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${_socks5_server_address}:${_socks5_server_port} %h %p" "yes | openssl s_client -showcerts -connect ${_https_tunnel}:${_https_tunnel_port}" | sed -n "/BEGIN/, /END/p" > ${_root}/${_ssh_host}.reference.pubcert
+    ssh root@${_https_tunnel} -o ConnectTimeout=${_timeout} -o "ProxyCommand=/usr/bin/nc -X 5 -x ${_socks5_server_address}:${_socks5_server_port} %h %p" "yes | openssl s_client -showcerts -connect ${_https_tunnel}:${_https_tunnel_port}" | sed -n "/BEGIN/, /END/p" > ${_root}/${_ssh_host}.reference.pubcert
     if [ ! -s ${_root}/${_ssh_host}.reference.pubcert ]; then
         log ERROR "Failed to query REFERENCE cert through socks5 proxy"
     fi
