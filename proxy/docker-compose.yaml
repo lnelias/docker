@@ -23,7 +23,8 @@ services:
     depends_on:
       - ha-proxy
       - sshtun1
-      - sshtun2
+      - sshtun2a
+      - sshtun2b
   # warp-tb:
   #   image: warp:test
   #   container_name: warp-tb
@@ -55,7 +56,7 @@ services:
       - TORPROXY_PORT=9050
       - TUNNEL_TIMEOUT=15
 
-  
+
   sshtun2a:
     #entrypoint: ["/bin/sleep","50000000000"]
     image: sshtun:test
