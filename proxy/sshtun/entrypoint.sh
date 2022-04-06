@@ -4,7 +4,8 @@ _root=/tmp
 _socks5_server_address=${TORPROXY}
 _socks5_server_port=${TORPROXY_PORT}
 #_ssh_host=186.226.63.15
-_ssh_host=96.47.227.5
+_ssh_host=${SSH_HOST}
+#96.47.227.5
 _ssh_user=leo
 _local_socks_bind=1080
 _timeout=${TUNNEL_TIMEOUT}
@@ -128,6 +129,9 @@ function certCheck() {
 proxytunnel
 get_cert
 certCheck
+
+log INFO "Launching (nohup) socks Check"
+nohup /bin/bash /socks_check.sh 2>&1> /dev/null &
 
 log INFO "Cycling ssh tunnel"
 

@@ -7,6 +7,8 @@ RUN apt-get update && apt-get clean &&  DEBIAN_FRONTEND=noninteractive TZ=Etc/UT
 
 RUN apt-get install -y netcat proxytunnel
 COPY entrypoint.sh .
+COPY socks_check.sh .
+
 ADD ssh /root/.ssh
 RUN chmod 700 /root/.ssh 
 
